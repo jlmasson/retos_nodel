@@ -21,7 +21,7 @@ else:
     # post_url = input('Enter post url: ')
 
     # create a new Chrome session
-    chromedriver_location = "./chromedriver"
+    chromedriver_location = "../bin/chromedriver"
     driver = webdriver.Chrome(chromedriver_location)
     driver.maximize_window()
 
