@@ -10,7 +10,7 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
 
-# The ID and range of a sample spreadsheet.
+# EL ID del link del Spreadsheet que se envió.
 SAMPLE_SPREADSHEET_ID = '18SIxsNHlXLXLPOrmYguEBa0Shz_7ufobEgID1LXrCXI'
 # SAMPLE_SPREADSHEET_ID = '1DRD97TAw2WIuTCG0Nh6BW-aVvDKAgY1wvJb38V-3vU8'
 SAMPLE_RANGE_NAME = ''
@@ -157,19 +157,6 @@ def main():
                     celdas_subtitulo.append(celda)
 
                 merge_cells_request = []
-
-                # {
-                #     "mergeCells": {
-                #         "range": {
-                #                 "sheetId": sheetId,
-                #                 "startRowIndex": 2,
-                #                 "endRowIndex": 6,
-                #                 "startColumnIndex": 0,
-                #                 "endColumnIndex": 2
-                #             },
-                #             "mergeType": "MERGE_COLUMNS"
-                #         }
-                # },
 
                 cantidad_columnas_desplazar = len(columnas_clave_comp)
 
