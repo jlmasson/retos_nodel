@@ -156,7 +156,38 @@ def main():
                     }
                     celdas_subtitulo.append(celda)
 
+                merge_cells_request = []
+
+                # {
+                #     "mergeCells": {
+                #         "range": {
+                #                 "sheetId": sheetId,
+                #                 "startRowIndex": 2,
+                #                 "endRowIndex": 6,
+                #                 "startColumnIndex": 0,
+                #                 "endColumnIndex": 2
+                #             },
+                #             "mergeType": "MERGE_COLUMNS"
+                #         }
+                # },
+
+                cantidad_columnas_desplazar = len(columnas_clave_comp)
+
                 for region, infoRegion in regiones_ordenadas:
+                    elem_merge = {
+                        "mergeCells": {
+                            "range": {
+                                "sheetId": target_sheet_id,
+                                "startRowIndex": 0,
+                                "endRowIndex": 1,
+                                "startColumnIndex": cantidad_columnas_desplazar + infoRegion['startIndex'],
+                                "endColumnIndex": cantidad_columnas_desplazar + infoRegion['startIndex'] + infoRegion['length']
+                            },
+                            "mergeType": "MERGE_ROWS"
+                        }
+                    }
+
+                    merge_cells_request.append(elem_merge)
 
                     celda_enc = {
                         'userEnteredValue': {
@@ -167,6 +198,18 @@ def main():
                         }
                     }
                     celdas_encabezado.append(celda_enc)
+
+                    #Añadir tantas celdas sean necesarias para el correcto merging
+                    for indice in range(infoRegion['length'] - 1):
+                        celda_enc = {
+                            'userEnteredValue': {
+                                'stringValue': ''
+                            },
+                            "userEnteredFormat": {
+                                "horizontalAlignment" : "CENTER",
+                            }
+                        }
+                        celdas_encabezado.append(celda_enc)
 
                     for elemento in infoRegion['data']:
                         celda = {
@@ -249,11 +292,23 @@ def main():
                     }
                 })
 
+                requests.extend(merge_cells_request)
+
                 body = {
                     'requests': requests    
                 }
                 
                 batch_update_response = sheet.batchUpdate(spreadsheetId=SAMPLE_SPREADSHEET_ID, body=body).execute()
+
+                # Actualización para merging
+                # body = {
+                #     'requests': merge_cells_request
+                # }
+                
+                # print(merge_cells_request)
+
+                # batch_update_response = sheet.batchUpdate(spreadsheetId=SAMPLE_SPREADSHEET_ID, body=body).execute()
+
                 print(batch_update_response)
 
 if __name__ == '__main__':
