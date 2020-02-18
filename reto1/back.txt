@@ -1,0 +1,83 @@
+        # Con el ID del SHEET, procedo a armar la tabla pivote
+        requests = []
+        # [START sheets_pivot_tables]
+        requests.append({
+            'updateCells': {
+                'rows': {
+                    'values': [
+                        {
+                            'pivotTable': {
+                                'source': {
+                                    'sheetId': source_sheet_id,
+                                    'startRowIndex': 0,
+                                    'startColumnIndex': 0,
+                                    'endRowIndex': 16,
+                                    'endColumnIndex': 4
+                                },
+                                'rows': [
+                                    {
+                                        'sourceColumnOffset': 0,
+                                        'showTotals': False,
+                                        'sortOrder': 'ASCENDING',
+
+                                    },
+                                    {
+                                        'sourceColumnOffset': 1,
+                                        'showTotals': False,
+                                        'sortOrder': 'ASCENDING',
+                                    },
+
+                                ],
+                                'columns': [
+                                    {
+                                        'sourceColumnOffset': 2,
+                                        'sortOrder': 'ASCENDING',
+                                        'showTotals': False,
+
+                                    },
+                                    {
+                                        'sourceColumnOffset': 3,
+                                        'sortOrder': 'ASCENDING',
+                                        'showTotals': False,
+
+                                    }
+                                ],
+                                'values': [
+                                    {
+                                        'summarizeFunction': 'CUSTOM',
+                                        'formula': " = IF(Country = 'Ecuador', 'Verdadero')"
+                                    },
+                                    {
+                                        'summarizeFunction': 'CUSTOM',
+                                        'formula': " = IF(Theme = 'PA', 'Verdadero')"
+                                    }
+
+                                    # {
+                                    #     'summarizeFunction': 'COUNTUNIQUE',
+                                    #     'sourceColumnOffset': 2,
+                                    #     'showTotals': False,
+                                    # },
+                                    # {
+                                    #     'summarizeFunction': 'COUNTUNIQUE',
+                                    #     'sourceColumnOffset': 3,
+                                    #     'showTotals': False,
+                                    # },
+                                ],
+                                'valueLayout': 'HORIZONTAL'
+                            }
+                        }
+                    ]
+                },
+                'start': {
+                    'sheetId': target_sheet_id,
+                    'rowIndex': 0,
+                    'columnIndex': 0
+                },
+                'fields': '*'
+            }
+        })
+        body = {
+            'requests': requests
+        }
+        response = sheet \
+            .batchUpdate(spreadsheetId=SAMPLE_SPREADSHEET_ID, body=body).execute()
