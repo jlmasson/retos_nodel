@@ -161,6 +161,9 @@ def main():
                     celda_enc = {
                         'userEnteredValue': {
                             'stringValue': str(region)
+                        },
+                        "userEnteredFormat": {
+                            "horizontalAlignment" : "CENTER",
                         }
                     }
                     celdas_encabezado.append(celda_enc)
