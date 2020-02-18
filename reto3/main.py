@@ -4,71 +4,90 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 from selenium.common.exceptions import NoSuchElementException
+import sys
 
-# get login credentials
-email = input('Enter email: ')
-password = input('Enter password: ')
+if len(sys.argv) != 4:
+    print("python main.py <user> <pass> <link>")
+else:
+    # get login credentials
+    email = sys.argv[1]
+    password = sys.argv[2]
+    # email = input('Enter email: ')
+    # password = input('Enter password: ')
 
-# get post url
-post_url = input('Enter post url: ')
+    # get post url
+    post_url = sys.argv[3]
+    print(post_url)
+    # post_url = input('Enter post url: ')
 
-# create a new Chrome session
-chromedriver_location = "./chromedriver"
-driver = webdriver.Chrome(chromedriver_location)
-driver.maximize_window()
+    # create a new Chrome session
+    chromedriver_location = "./chromedriver"
+    driver = webdriver.Chrome(chromedriver_location)
+    driver.maximize_window()
 
-# log in
-driver.get("https://www.facebook.com")
-search_field = driver.find_element_by_id("email")
-search_field.send_keys(email)
-search_field = driver.find_element_by_id("pass")
-search_field.send_keys(password)
-search_field.submit()
+    # log in
+    driver.get("https://www.facebook.com")
+    search_field = driver.find_element_by_id("email")
+    search_field.send_keys(email)
+    search_field = driver.find_element_by_id("pass")
+    search_field.send_keys(password)
+    search_field.submit()
 
-print("Logged in as " + email)
+    print("Logged in as " + email)
 
-# navigate to the post url
-driver.get(post_url)
-engagement_div = driver.find_element_by_css_selector("a[href*='/ufi/reaction']")
+    # navigate to the post url
+    driver.get(post_url)
 
-print(engagement_div)
+    existenReacciones = False
 
-sleep(2)
+    while True:
+        try:
+            engagement_div = driver.find_element_by_css_selector("a[href*='/ufi/reaction']")
+            driver.execute_script("arguments[0].click();", engagement_div)
+            sleep(2)
+            existenReacciones = True
+            break
+        except NoSuchElementException:
+            existenReacciones = False
+            break
 
-driver.execute_script("arguments[0].click();", engagement_div)
+    sleep(2)
 
-# switch to all engagement - not working
-engagement_all = driver.find_element_by_css_selector("a[tabindex*='-1']")
 
-print(engagement_all)
+    # switch to all engagement - not working
+    # engagement_all = driver.find_element_by_css_selector("a[tabindex*='-1']")
 
-sleep(2)
-driver.execute_script("arguments[0].click();", engagement_div)
+    # print(engagement_all)
 
-# click see more until there no such option
-print("Loading all the users.")
+    if (existenReacciones):
+        driver.execute_script("arguments[0].click();", engagement_div)
 
-while True:
-    print("Entré a buscar likes")
-    try:
-        viewMoreButton = driver.find_element_by_css_selector("a[href*='/ufi/reaction/profile/browser/fetch']")
-        driver.execute_script("arguments[0].click();", viewMoreButton)
-        sleep(2)
-    except NoSuchElementException:
-        break
+        # click see more until there no such option
+        print("Loading all the users.")
 
-# invite users
-print("Inviting the users.")
-users = driver.find_elements_by_css_selector("a[ajaxify*='/pages/post_like_invite/send/']")
-invitedUsers = 0
+        while True:
+            print("Entré a buscar likes")
+            try:
+                viewMoreButton = driver.find_element_by_css_selector("a[href*='/ufi/reaction/profile/browser/fetch']")
+                driver.execute_script("arguments[0].click();", viewMoreButton)
+                sleep(2)
+            except NoSuchElementException:
+                break
 
-for i in users:
-    user = driver.find_element_by_css_selector("a[ajaxify*='/pages/post_like_invite/send/']")
-    driver.execute_script("arguments[0].click();", user)
-    invitedUsers = invitedUsers + 1
-    sleep(1)
+        # invite users
+        print("Inviting the users.")
+        users = driver.find_elements_by_css_selector("a[ajaxify*='/pages/post_like_invite/send/']")
+        sleep(1)
+        invitedUsers = 0
 
-print('My job is done here. I have invited: ' + str(invitedUsers))
+        for i in users:
+            user = driver.find_element_by_css_selector("a[ajaxify*='/pages/post_like_invite/send/']")
+            driver.execute_script("arguments[0].click();", user)
+            invitedUsers = invitedUsers + 1
+            sleep(1)
 
-# close the browser window
-driver.quit()
+        print('My job is done here. I have invited: ' + str(invitedUsers))
+    else:
+        print("No reactions found")
+    # close the browser window
+    driver.quit()
