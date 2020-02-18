@@ -201,13 +201,17 @@ def main():
                     for j in range(matriz.shape[1]):
                         celda = {
                             'userEnteredValue': {
-                                'stringValue': str(matriz[i, j]).upper()
+                                'stringValue': str(matriz[i, j]).upper(),
+                            },
+                            "userEnteredFormat": {
+                                "horizontalAlignment" : "CENTER",
                             }
-                        }
+                        },
+                        
                         celdas_fila.append(celda)
 
                     valores = {
-                        'values': celdas_fila
+                        'values': celdas_fila,
                     }
                     celdas_hoja.append(valores)
 
